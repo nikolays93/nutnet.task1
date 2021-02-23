@@ -13,6 +13,8 @@
                             {{ session('status') }}
                         </div>
                     @endif
+
+                    <a href="{{ route('records') }}">Пластинки</a>
                 </div>
             </div>
         </div>
