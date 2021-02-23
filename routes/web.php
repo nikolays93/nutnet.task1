@@ -21,3 +21,7 @@ Auth::routes([
 ]);
 
 Route::get('/admin', 'Admin\AdminController@index')->name('admin');
+Route::get('/admin/records', 'Admin\RecordController@index')->name('records');
+Route::get('/admin/record/update', 'Admin\RecordController@updateForm')->name('record.update.form');
+Route::post('/admin/record/update', 'Admin\RecordController@update')->name('record.update');
+Route::match(['get', 'post', 'delete'], '/admin/record/delete', 'Admin\RecordController@delete')->name('record.delete');
