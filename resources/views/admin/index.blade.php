@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <a href="{{ route('records') }}">Пластинки</a>
+                    <a href="{{ route('records.index') }}">Пластинки</a>
                 </div>
             </div>
         </div>

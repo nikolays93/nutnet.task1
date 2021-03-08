@@ -5,88 +5,121 @@ namespace App\Http\Controllers\Admin;
 use App\Record;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RecordRequest;
 use Illuminate\Validation\ValidationException;
 
 class RecordController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        return view('admin/records', [
+        return view('admin/records.list', [
             'records' => Record::paginate(10),
         ]);
     }
 
-    private function editForm($record)
+    /**
+     * Redirect to records list with success message.
+     *
+     * @param  string  $message message for success alert notice.
+     * @return \Illuminate\Http\Response
+     */
+    private function success($message)
     {
-        return view('admin/record-update', [
+        return redirect()
+            ->route('records.index')
+            ->with(['success-message' => $message]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('admin/records.form', [
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(RecordRequest $request)
+    {
+        $record = Record::create($request->all());
+
+        return $this->success(sprintf('Пластинка "%s" добавлена.', $record->name));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        // @todo
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $record = Record::findOrFail($id);
+
+        return view('admin/records.form', [
             'record' => $record,
         ]);
     }
 
-    private function createForm()
-    {
-        return view('admin/record-update', [
-            'record' => new Record(),
-        ]);
-    }
-
-    public function updateForm(Request $request, Record $record)
-    {
-        $requestId = intval($request->get('id'));
-
-        if ($requestId > 0) {
-            return $this->editForm($record::find($requestId));
-        }
-
-        return $this->createForm();
-    }
-
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  Record  $record
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Record $record)
     {
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
+        $recordOldName = $record->name;
+        $record->update($request->all());
 
-        $requestId = intval($request->get('id'));
-
-        if ($requestId > 0) {
-            $record = $record::find($requestId);
-            $successMessage = 'Пластинка "%s" обновлена.';
-        } else {
-            $successMessage = 'Пластинка "%s" добавлена.';
-        }
-
-        $record->name = $request->input('name');
-        $record->description = $request->input('description');
-
-        $record->save();
-
-        return redirect()
-            ->route('records')
-            ->with(['success-message' => sprintf($successMessage, $record->name)]);
+        return $this->success(sprintf('Пластинка "%s" обновлена.', $recordOldName));
     }
 
-    public function delete(Request $request)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  Record  $record
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Record $record)
     {
-        $requestId = intval($request->get('id'));
-        $message = [];
+        $record->delete();
 
-        if ($requestId > 0) {
-            $record = Record::find($requestId);
-
-            if ($record) {
-                $record->delete();
-                $message['success-message'] = 'Пластинка ' . $record->name . ' удалена.';
-            }
-        }
-
-        return redirect()
-            ->route('records')
-            ->with($message);
+        return $this->success(sprintf('Пластинка "%s" удалена.', $record->name));
     }
 }

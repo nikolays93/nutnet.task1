@@ -21,7 +21,10 @@ Auth::routes([
 ]);
 
 Route::get('/admin', 'Admin\AdminController@index')->name('admin');
-Route::get('/admin/records', 'Admin\RecordController@index')->name('records');
-Route::get('/admin/record/update', 'Admin\RecordController@updateForm')->name('record.update.form');
-Route::post('/admin/record/update', 'Admin\RecordController@update')->name('record.update');
-Route::match(['get', 'post', 'delete'], '/admin/record/delete', 'Admin\RecordController@delete')->name('record.delete');
+
+/**
+ * Records
+ *
+ * @link https://laravel.com/docs/8.x/controllers#resource-controllers
+ */
+Route::resource('records', 'Admin\RecordController');
