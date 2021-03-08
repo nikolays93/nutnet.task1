@@ -11,6 +11,11 @@ use Illuminate\Validation\ValidationException;
 class RecordController extends Controller
 {
     /**
+     * @var integer Items count on page
+     */
+    private $paginate = 10;
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -18,7 +23,7 @@ class RecordController extends Controller
     public function index()
     {
         return view('admin.records.list', [
-            'records' => Record::paginate(10),
+            'records' => Record::paginate($this->paginate),
         ]);
     }
 
