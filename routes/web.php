@@ -15,16 +15,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/**
+ * Authorization pages.
+ */
 Auth::routes([
     'register' => false,
     'reset' => false,
 ]);
 
-Route::get('/admin', 'Admin\AdminController@index')->name('admin');
+Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
+	/**
+	 * Admin index page.
+	 */
+	Route::get('/', 'Admin\AdminController@index')->name('admin');
 
-/**
- * Records
- *
- * @link https://laravel.com/docs/8.x/controllers#resource-controllers
- */
-Route::resource('records', 'Admin\RecordController');
+	/*
+	 * Records resource.
+	 *
+	 * @link https://laravel.com/docs/8.x/controllers#resource-controllers
+	 */
+	Route::resource('records', 'Admin\RecordController', [
+		'as' => 'admin',
+	]);
+});

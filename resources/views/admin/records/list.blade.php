@@ -9,7 +9,7 @@
         @endif
 
         <p class="text-right">
-            <a class="btn btn-primary" href="{{ route('records.create') }}">Добавить</a>
+            <a class="btn btn-primary" href="{{ route('admin.records.create') }}">Добавить</a>
         </p>
 
         <table class="table records records_table">
@@ -33,10 +33,10 @@
                     <td class="record-row-updated_at">{{ $record->updated_at }}</td>
                     <td class="record-row-description">{{ $record->description }}</td>
                     <td class="record-row-edit">
-                        <a class="btn btn-warning" href="{{ route('records.edit', ['id' => $record->id]) }}">Изменить</a>
+                        <a class="btn btn-warning" href="{{ route('admin.records.edit', ['id' => $record->id]) }}">Изменить</a>
                     </td>
                     <td class="record-row-destroy">
-                        <form action="{{ route('records.destroy', ['id' => $record->id]) }}" method="POST">
+                        <form action="{{ route('admin.records.destroy', ['id' => $record->id]) }}" method="POST">
                             {{ csrf_field() }}
                             @method('DELETE')
                             <button class="btn btn-danger" type="submit">Удалить</button>

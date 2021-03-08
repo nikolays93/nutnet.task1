@@ -11,23 +11,13 @@ use Illuminate\Validation\ValidationException;
 class RecordController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return view('admin/records.list', [
+        return view('admin.records.list', [
             'records' => Record::paginate(10),
         ]);
     }
@@ -41,7 +31,7 @@ class RecordController extends Controller
     private function success($message)
     {
         return redirect()
-            ->route('records.index')
+            ->route('admin.records.index')
             ->with(['success-message' => $message]);
     }
 
@@ -52,7 +42,7 @@ class RecordController extends Controller
      */
     public function create()
     {
-        return view('admin/records.form', [
+        return view('admin.records.form', [
         ]);
     }
 
@@ -90,7 +80,7 @@ class RecordController extends Controller
     {
         $record = Record::findOrFail($id);
 
-        return view('admin/records.form', [
+        return view('admin.records.form', [
             'record' => $record,
         ]);
     }

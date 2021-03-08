@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form action="{{ isset($record) ? route('records.update', $record) : route('records.store') }}" method="post">
+    <form action="{{ isset($record) ? route('admin.records.update', $record) : route('admin.records.store') }}" method="post">
         {{ csrf_field() }}
         @isset($record)
             @method('PUT')

@@ -34,7 +34,7 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('records.index') }}">Пластинки</a>
+                            <a class="nav-link" href="{{ route('admin.records.index') }}">Пластинки</a>
                         </li>
                     </ul>
 
