@@ -162,7 +162,7 @@ return [
     */
 
     'attributes' => [
-        'name'                  => 'Имя',
+        'name'                  => 'Название',
         'username'              => 'Никнейм',
         'email'                 => 'E-Mail адрес',
         'first_name'            => 'Имя',
