@@ -97,7 +97,7 @@ class RecordController extends Controller
      * @param  Record  $record
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Record $record)
+    public function update(RecordRequest $request, Record $record)
     {
         $recordOldName = $record->name;
         $record->update($request->all());
