@@ -30,11 +30,21 @@ class RecordController extends Controller
     /**
      * Redirect to records list with success message.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  string  $message message for success alert notice.
      * @return \Illuminate\Http\Response
      */
-    private function success($message)
+    private function success($request, $message)
     {
+        if ($request->ajax()) {
+            $request->session()->flash('success-message', $message);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $message,
+            ]);
+        }
+
         return redirect()
             ->route('admin.records.index')
             ->with(['success-message' => $message]);
@@ -61,7 +71,7 @@ class RecordController extends Controller
     {
         $record = Record::create($request->all());
 
-        return $this->success(sprintf('Пластинка "%s" добавлена.', $record->name));
+        return $this->success($request, sprintf('Пластинка "%s" добавлена.', $record->name));
     }
 
     /**
@@ -102,19 +112,20 @@ class RecordController extends Controller
         $recordOldName = $record->name;
         $record->update($request->all());
 
-        return $this->success(sprintf('Пластинка "%s" обновлена.', $recordOldName));
+        return $this->success($request, sprintf('Пластинка "%s" обновлена.', $recordOldName));
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  Record  $record
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Record $record)
+    public function destroy(Request $request, Record $record)
     {
         $record->delete();
 
-        return $this->success(sprintf('Пластинка "%s" удалена.', $record->name));
+        return $this->success($request, sprintf('Пластинка "%s" удалена.', $record->name));
     }
 }

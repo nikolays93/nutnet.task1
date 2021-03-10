@@ -6,27 +6,49 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+const $recordForm = $(document.record);
+const $errors = $recordForm.find('.errors');
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+if ($recordForm.length && $recordForm.hasClass('ajax')) {
+	$recordForm.on('submit', function(event) {
+		event.preventDefault();
 
-// const files = require.context('./', true, /\.vue$/i);
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $recordForm.find('[name="_token"]').val(),
+			}
+		});
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+		$.ajax({
+			type: $recordForm.attr('method'), // $recordForm.find('[name="_method"]').val(),
+			url: $recordForm.attr('action'),
+			data: $recordForm.serialize(),
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+			success: function(data) {
+				// Reset errors.
+				$errors.html('');
+				$recordForm.find('.is-invalid').removeClass('is-invalid');
 
-const app = new Vue({
-    el: '#app',
-});
+				// Redirect to list.
+				document.location.href = $recordForm.find('[name="_list"]').val();
+			},
+
+			error: function (err) {
+				if (err.status == 422) {
+					// Join errors, del: <br />\n
+					let errorsHTML = Object.keys(err.responseJSON.errors)
+						.map(key => err.responseJSON.errors[key])
+						.join("<br />\n");
+
+					// Show errors in form.
+					$errors.html('<div class="alert alert-danger">' + errorsHTML + '</div>');
+
+					// display errors on each form field.
+					$.each(err.responseJSON.errors, function (fieldName, error) {
+						$recordForm.find('[name="'+fieldName+'"]').addClass('is-invalid');
+					});
+				}
+			},
+		});
+	});
+}
